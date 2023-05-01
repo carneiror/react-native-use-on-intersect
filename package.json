@@ -1,21 +1,24 @@
 {
   "name": "react-native-use-intersect",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-native": "^0.71.6",
-    "react": "^18.2.0",
-    "react-native": "^0.71.7",
+    "expo": "~48.0.15",
+    "expo-status-bar": "~1.4.4",
+    "react": "18.2.0",
+    "react-native": "0.71.7",
     "use-sync-external-store": "^1.2.0"
   },
   "devDependencies": {
-    "tsc": "^2.0.4"
-  }
+    "@babel/core": "^7.20.0",
+    "@types/react": "~18.0.14",
+    "typescript": "^4.9.4"
+  },
+  "private": true
 }
