@@ -40,23 +40,24 @@ function decorateData<T>(
  * @param props TODO
  * @returns TODO
  */
-export default function FlatList<T>(
-  props: FlatListProps<T & { __id: string }>
-) {
+export default function FlatList<T>(props: FlatListProps<T>) {
+  type K = T & { __id: string };
+
   /**
    * Wrapper to renderItem function so it wraps rendered items
    * with LayoutContext. This way we can know the layout hierarchy
    * of all of them.
    */
-  const renderItem = useCallback<
-    Exclude<typeof props.renderItem, null | undefined>
-  >(({ item, index, separators }) => {
-    return (
-      <LayoutContextWrapper id={item.__id}>
-        {props.renderItem && props.renderItem({ item, index, separators })}
-      </LayoutContextWrapper>
-    );
-  }, []);
+  const renderItem = useCallback<ListRenderItem<K>>(
+    ({ item, index, separators }) => {
+      return (
+        <LayoutContextWrapper id={item.__id}>
+          {props.renderItem && props.renderItem({ item, index, separators })}
+        </LayoutContextWrapper>
+      );
+    },
+    []
+  );
 
   /**
    * Wrapper to onViewableItemsChanged function so everytime a component changes
@@ -77,7 +78,7 @@ export default function FlatList<T>(
 
   return (
     <ReactNativeFlatList
-      {...props}
+      {...(props as FlatListProps<K>)}
       data={data}
       renderItem={renderItem}
       onViewableItemsChanged={onViewableItemsChanged}
