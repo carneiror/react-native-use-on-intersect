@@ -1,16 +1,16 @@
-let state = {};
+let state: Record<string, boolean> = {};
 
-let listeners = [] as any;
+let listeners = [] as (() => void)[];
 
 const store = {
-  updateVisibility(id, visible) {
+  updateVisibility(id: string, visible: boolean) {
     state = {
       ...state,
       [id]: visible,
     };
     emitChange();
   },
-  subscribe(listener) {
+  subscribe(listener: () => void) {
     listeners = [...listeners, listener];
     return () => {
       listeners = listeners.filter((l) => l !== listener);
