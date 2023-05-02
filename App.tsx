@@ -11,20 +11,8 @@ const VIEW_CONFIG = {
   minimumViewTime: 1,
 };
 
-type Card = {
-  __id: string;
-  title: string;
-};
-
-// Create a vertical list with an inner horizontal list
-const ListExample = [
-  ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => ({
-    title: `Vertical Item ${index}`,
-  })),
-];
-
 // Example of a Card
-const Card: React.FC<Card> = ({ __id, title }) => {
+const Card: React.FC<{ __id: string; title: string }> = ({ __id, title }) => {
   const isVisible = useIntersect(__id);
 
   const backgroundColor = isVisible ? "#A2E3C4" : "#E2EFDE";
@@ -53,7 +41,9 @@ const HorizontalList: React.FC = () => {
 export default function App() {
   return (
     <FlatList
-      data={ListExample}
+      data={[1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => ({
+        title: `Vertical Item ${index}`,
+      }))}
       renderItem={({ item, index }) =>
         index % 2 ? <HorizontalList /> : <Card {...item} />
       }
