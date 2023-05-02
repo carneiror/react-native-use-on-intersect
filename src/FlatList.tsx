@@ -26,12 +26,13 @@ function getUniqId(): string {
  */
 function decorateData<T>(
   data: ArrayLike<T> | null | undefined
-): (T & { __id: string })[] | null | undefined {
+): (T & { id: string })[] | null | undefined {
   if (!data) {
     return data;
   }
 
-  return (data as T[]).map((v) => ({ ...v, __id: getUniqId() }));
+  // If no id is provided, we create one
+  return (data as T[]).map((v) => ({ id: getUniqId(), ...v }));
 }
 
 /**
@@ -42,10 +43,10 @@ function decorateData<T>(
  */
 export default function FlatList<T>(
   props: Omit<FlatListProps<T>, "renderItem"> & {
-    renderItem: ListRenderItem<T & { __id: string }>;
+    renderItem: ListRenderItem<T & { id: string }>;
   }
 ) {
-  type K = T & { __id: string };
+  type K = T & { id: string };
 
   /**
    * Wrapper to renderItem function so it wraps rendered items
@@ -56,7 +57,7 @@ export default function FlatList<T>(
     Exclude<typeof props.renderItem, null | undefined>
   >(({ item, index, separators }) => {
     return (
-      <LayoutContextWrapper id={item.__id}>
+      <LayoutContextWrapper id={item.id}>
         {props.renderItem && props.renderItem({ item, index, separators })}
       </LayoutContextWrapper>
     );
@@ -70,7 +71,7 @@ export default function FlatList<T>(
     Exclude<typeof props.onViewableItemsChanged, null | undefined>
   >(({ changed }) => {
     changed.forEach(({ item, isViewable }) => {
-      store.updateVisibility(item.__id, isViewable);
+      store.updateVisibility(item.id, isViewable);
     });
   }, []);
 

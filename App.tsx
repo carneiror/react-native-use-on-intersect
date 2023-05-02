@@ -12,8 +12,8 @@ const VIEW_CONFIG = {
 };
 
 // Example of a Card
-const Card: React.FC<{ __id: string; title: string }> = ({ __id, title }) => {
-  const isVisible = useIntersect(__id);
+const Card: React.FC<{ id: string; title: string }> = ({ id, title }) => {
+  const isVisible = useIntersect(id);
 
   const backgroundColor = isVisible ? "#A2E3C4" : "#E2EFDE";
 
