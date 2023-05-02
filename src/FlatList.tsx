@@ -40,7 +40,11 @@ function decorateData<T>(
  * @param props TODO
  * @returns TODO
  */
-export default function FlatList<T>(props: FlatListProps<T>) {
+export default function FlatList<T>(
+  props: Omit<FlatListProps<T>, "renderItem"> & {
+    renderItem: ListRenderItem<T & { __id: string }>;
+  }
+) {
   type K = T & { __id: string };
 
   /**
@@ -48,16 +52,15 @@ export default function FlatList<T>(props: FlatListProps<T>) {
    * with LayoutContext. This way we can know the layout hierarchy
    * of all of them.
    */
-  const renderItem = useCallback<ListRenderItem<K>>(
-    ({ item, index, separators }) => {
-      return (
-        <LayoutContextWrapper id={item.__id}>
-          {props.renderItem && props.renderItem({ item, index, separators })}
-        </LayoutContextWrapper>
-      );
-    },
-    []
-  );
+  const renderItem = useCallback<
+    Exclude<typeof props.renderItem, null | undefined>
+  >(({ item, index, separators }) => {
+    return (
+      <LayoutContextWrapper id={item.__id}>
+        {props.renderItem && props.renderItem({ item, index, separators })}
+      </LayoutContextWrapper>
+    );
+  }, []);
 
   /**
    * Wrapper to onViewableItemsChanged function so everytime a component changes

@@ -8,7 +8,7 @@ export default function useIntersect(id: string): boolean {
 
   const selector = useCallback(
     (state: any): boolean =>
-      [...parents, id].every((key) => state[key] ?? true),
+      [...parents, id].every((key) => state[key] ?? false),
     [parents, id]
   );
 

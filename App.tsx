@@ -5,61 +5,72 @@ import FlatList from "./src/FlatList";
 import { LayoutContext } from "./src/LayoutContext";
 import useIntersect from "./src/useIntersect";
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
+const VIEW_CONFIG = {
+  itemVisiblePercentThreshold: 95,
+  waitForInteraction: false,
+  minimumViewTime: 1,
+};
+
+type Card = {
+  __id: string;
+  title: string;
+};
+
+// Create a vertical list with an inner horizontal list
+const ListExample = [
+  ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => ({
+    title: `Vertical Item ${index}`,
+  })),
 ];
 
-function Card({ id, title }: { id: string; title: string }) {
-  const isVisible = useIntersect(id);
+// Example of a Card
+const Card: React.FC<Card> = ({ __id, title }) => {
+  const isVisible = useIntersect(__id);
+
+  const backgroundColor = isVisible ? "#A2E3C4" : "#E2EFDE";
 
   return (
-    <View style={styles.card}>
-      <Text>
-        {title} + {JSON.stringify(isVisible)}
-      </Text>
+    <View style={{ ...styles.card, backgroundColor }}>
+      <Text style={styles.title}>{title}</Text>
     </View>
   );
-}
+};
+
+// Example of an Horizontal List
+const HorizontalList: React.FC = () => {
+  return (
+    <FlatList
+      data={[1, 2, 3, 4, 5, 6].map((index) => ({
+        title: `Horizontal Item ${index}`,
+      }))}
+      horizontal={true}
+      renderItem={({ item }) => <Card {...item} />}
+      viewabilityConfig={VIEW_CONFIG}
+    />
+  );
+};
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={[...DATA]}
-        renderItem={({ item }) => (
-          <FlatList
-            data={[...DATA]}
-            renderItem={({ item }) => <Card id={item.id} title={item.title} />}
-            keyExtractor={(item, index) => `${item.id}-${index}`}
-          />
-        )}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
-      />
-    </View>
+    <FlatList
+      data={ListExample}
+      renderItem={({ item, index }) =>
+        index % 2 ? <HorizontalList /> : <Card {...item} />
+      }
+      viewabilityConfig={VIEW_CONFIG}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   card: {
-    padding: 20,
-    margin: 5,
-    backgroundColor: "#f60",
+    borderColor: "#808F87",
+    borderWidth: 1,
+  },
+  title: {
+    fontSize: 20,
+    textAlign: "center",
+    paddingVertical: 50,
+    paddingHorizontal: 20,
   },
 });
